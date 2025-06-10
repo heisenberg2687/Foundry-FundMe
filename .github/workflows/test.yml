@@ -28,15 +28,14 @@ jobs:
         run: |
           forge fmt --check
         id: fmt
-  
+
       - name: Install Dev Dependencies
         run: |
           rm -rf lib/chainlink-brownie-contracts
-          rm -rf lib/foundry-devops
-          rm -rf lib/forge-std
           forge install cyfrin/foundry-devops --no-git
           forge install smartcontractkit/chainlink-brownie-contracts --no-git
           forge install foundry-rs/forge-std --no-git
+
 
 
       - name: Run Forge build
@@ -51,4 +50,4 @@ jobs:
 
       - name: Fetch submodules
         run: 
-          git submodule update --init --recursive  
+          git submodule update --init --recursive
