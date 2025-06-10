@@ -32,6 +32,8 @@ jobs:
         id: fmt
 
       - name: Install Dev Dependencies
+        env:
+         GIT_TERMINAL_PROMPT: "0"
         run: |
           forge install patrickalphac/foundry-devops --no-git
           forge install smartcontractkit/chainlink-brownie-contracts --no-git
