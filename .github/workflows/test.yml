@@ -44,3 +44,7 @@ jobs:
         run: |
           forge test -vvv
         id: test
+
+      - name: Fetch submodules
+        run: 
+          git submodule update --init --recursive  
