@@ -1,6 +1,6 @@
-// SPDX-License-Identifier: MIT    
+// SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.19; 
+pragma solidity ^0.8.19;
 
 import {Test} from "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
@@ -14,17 +14,14 @@ contract FundeMeTest is Test {
     uint256 constant SEND_ETH = 10e15; // 10 ETH in wei
     uint256 constant GAS_PRICE = 1e9; // 1 Gwei
 
-
-
-
-   function setUp() public {
+    function setUp() public {
         DeployFundMe deployFundMe = new DeployFundMe();
         fundMe = deployFundMe.run();
         vm.deal(USER, STARTING_BALANCE); // Give USER 10 ETH
     }
 
     function testMinimumDollarIsFive() public view {
-         assertEq(fundMe.MINIMUM_USD(), 5e18);
+        assertEq(fundMe.MINIMUM_USD(), 5e18);
     }
 
     function testOwnerIsMsgSender() public view {
@@ -43,25 +40,25 @@ contract FundeMeTest is Test {
 
     function testFundingUpdatesFundDataStructure() public {
         vm.prank(USER); //this txn wuld be sent by USER
-        fundMe.fund{value:SEND_ETH }();
+        fundMe.fund{value: SEND_ETH}();
         uint256 amountFunded = fundMe.getAddressToAmountFunded(USER);
-        assertEq(amountFunded,SEND_ETH );
+        assertEq(amountFunded, SEND_ETH);
     }
 
     function testAddFunderToArrayOnFund() public {
         vm.prank(USER); //this txn wuld be sent by USER
-        fundMe.fund{value:SEND_ETH }();
+        fundMe.fund{value: SEND_ETH}();
         address funder = fundMe.getFunder(0);
         assertEq(funder, USER);
     }
 
     modifier funded() {
         vm.prank(USER); //this txn wuld be sent by USER
-        fundMe.fund{value:SEND_ETH }();
+        fundMe.fund{value: SEND_ETH}();
         _;
     }
 
-    function testOnlyOwnerCanWithdraw() public funded{
+    function testOnlyOwnerCanWithdraw() public funded {
         vm.prank(USER); //this txn wuld be sent by USER
         vm.expectRevert();
         fundMe.withdraw(); // USER tries to withdraw, but should fail
@@ -82,9 +79,9 @@ contract FundeMeTest is Test {
         //Assert
         assertEq(endingFundMeBalance, 0);
         assertApproxEqAbs(startingFundMeBalance + startingUserBalance, endingUserBalance, 1e16); // 1e15 is a tolerance for gas fees
-    }   
+    }
 
-     function testcheapWithdrawWithASingleFunder() public funded {
+    function testcheapWithdrawWithASingleFunder() public funded {
         //Arrange
         uint256 startingFundMeBalance = address(fundMe).balance;
         uint256 startingUserBalance = USER.balance;
@@ -99,7 +96,7 @@ contract FundeMeTest is Test {
         //Assert
         assertEq(endingFundMeBalance, 0);
         assertApproxEqAbs(startingFundMeBalance + startingUserBalance, endingUserBalance, 1e16); // 1e15 is a tolerance for gas fees
-    } 
+    }
 
     function testWithdrawWithMultipleFunders() public funded {
         //Arrange
@@ -121,10 +118,6 @@ contract FundeMeTest is Test {
 
         //Assert
         assertEq(endingFundMeBalance, 0);
-        assertApproxEqAbs(
-            startingFundMeBalance + startingOwnerBalance,
-            endingOwnerBalance,
-            1e16
-        ); // 1e15 is a tolerance for gas fees
+        assertApproxEqAbs(startingFundMeBalance + startingOwnerBalance, endingOwnerBalance, 1e16); // 1e15 is a tolerance for gas fees
     }
 }

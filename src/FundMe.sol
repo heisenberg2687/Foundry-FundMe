@@ -22,18 +22,12 @@ contract FundMe {
     }
 
     address[] private s_funders;
-    mapping(address funders => uint256 amountFunded)
-        private s_addressToAmountFunded;
+    mapping(address funders => uint256 amountFunded) private s_addressToAmountFunded;
 
     function fund() public payable {
-        require(
-            msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD,
-            "GAREEB ORR ETH BHEJ"
-        );
+        require(msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD, "GAREEB ORR ETH BHEJ");
         s_funders.push(msg.sender);
-        s_addressToAmountFunded[msg.sender] =
-            s_addressToAmountFunded[msg.sender] +
-            msg.value;
+        s_addressToAmountFunded[msg.sender] = s_addressToAmountFunded[msg.sender] + msg.value;
     }
 
     function getversion() public view returns (uint256) {
@@ -45,27 +39,21 @@ contract FundMe {
             s_addressToAmountFunded[s_funders[i]] = 0;
         }
         s_funders = new address[](0);
-        (bool callSuccess, ) = payable(msg.sender).call{
-            value: address(this).balance
-        }("");
+        (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}("");
         require(callSuccess, "Withrawsl failed!!");
     }
 
-     function cheapwithdraw() public onlyOwner {
+    function cheapwithdraw() public onlyOwner {
         uint256 fundersCount = s_funders.length;
         for (uint256 i = 0; i < fundersCount; i++) {
             s_addressToAmountFunded[s_funders[i]] = 0;
         }
         s_funders = new address[](0);
-        (bool callSuccess, ) = payable(msg.sender).call{
-            value: address(this).balance
-        }("");
+        (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}("");
         require(callSuccess, "Withrawsl failed!!");
     }
 
-    function getAddressToAmountFunded(
-        address fundingaddress
-    ) external view returns (uint256) {
+    function getAddressToAmountFunded(address fundingaddress) external view returns (uint256) {
         return s_addressToAmountFunded[fundingaddress];
     }
 

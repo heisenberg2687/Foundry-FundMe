@@ -18,32 +18,31 @@ contract HelperConfig is Script {
         if (block.chainid == 11155111) {
             s_activeNetworkConfig = getSepoliaEthConfig();
         } else if (block.chainid == 1) {
-           s_activeNetworkConfig = getMainnetEthConfig();
+            s_activeNetworkConfig = getMainnetEthConfig();
         } else {
             s_activeNetworkConfig = getOrCreateAnvilEthConfig();
         }
     }
+
     function getSepoliaEthConfig() public pure returns (NetworkConfig memory) {
-        NetworkConfig memory sepoliaEthConfig = NetworkConfig({
-            priceFeed: 0x694AA1769357215DE4FAC081bf1f309aDC325306});
+        NetworkConfig memory sepoliaEthConfig = NetworkConfig({priceFeed: 0x694AA1769357215DE4FAC081bf1f309aDC325306});
         return sepoliaEthConfig;
     }
+
     function getMainnetEthConfig() public pure returns (NetworkConfig memory) {
-        NetworkConfig memory mainnetEthConfig = NetworkConfig({
-            priceFeed: 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419});
+        NetworkConfig memory mainnetEthConfig = NetworkConfig({priceFeed: 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419});
         return mainnetEthConfig;
     }
+
     function getOrCreateAnvilEthConfig() public returns (NetworkConfig memory) {
-        if(s_activeNetworkConfig.priceFeed != address(0)){
-             return s_activeNetworkConfig;
-         }
+        if (s_activeNetworkConfig.priceFeed != address(0)) {
+            return s_activeNetworkConfig;
+        }
         vm.startBroadcast();
-         MockV3Aggregator mockV3Aggregator = new MockV3Aggregator(DECIMALS, INITIAL_PRICE);
-         // Deploy a mock aggregator for testing purposes
+        MockV3Aggregator mockV3Aggregator = new MockV3Aggregator(DECIMALS, INITIAL_PRICE);
+        // Deploy a mock aggregator for testing purposes
         vm.stopBroadcast();
-         NetworkConfig memory anvilEthConfig = NetworkConfig({
-            priceFeed: address(mockV3Aggregator)
-         });
-         return anvilEthConfig;
+        NetworkConfig memory anvilEthConfig = NetworkConfig({priceFeed: address(mockV3Aggregator)});
+        return anvilEthConfig;
     }
 }
