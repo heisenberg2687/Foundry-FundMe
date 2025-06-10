@@ -15,18 +15,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: recursive  # Keep this if you're using submodules like forge-std
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
 
       - name: Show Forge version
-        run: |
-          forge --version
+        run: forge --version
 
       - name: Run Forge fmt
-        run: |
-          forge fmt --check
+        run: forge fmt --check
         id: fmt
 
       - name: Install Dev Dependencies
@@ -34,20 +32,13 @@ jobs:
           rm -rf lib/chainlink-brownie-contracts
           forge install cyfrin/foundry-devops --no-git
           forge install smartcontractkit/chainlink-brownie-contracts --no-git
-          forge install foundry-rs/forge-std --no-git
-
-
+        id: deps
 
       - name: Run Forge build
-        run: |
-          forge build --sizes
+        run: forge build --sizes
         id: build
 
       - name: Run Forge tests
-        run: |
-          forge test -vvv
+        run: forge test -vvv
         id: test
 
-      - name: Fetch submodules
-        run: 
-          git submodule update --init --recursive
