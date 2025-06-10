@@ -31,9 +31,13 @@ jobs:
   
       - name: Install Dev Dependencies
         run: |
-            forge install cyfrin/foundry-devops --no-git
-            forge install smartcontractkit/chainlink-brownie-contracts --no-git
-            forge install foundry-rs/forge-std --no-git
+          rm -rf lib/chainlink-brownie-contracts
+          rm -rf lib/foundry-devops
+          rm -rf lib/forge-std
+          forge install cyfrin/foundry-devops --no-git
+          forge install smartcontractkit/chainlink-brownie-contracts --no-git
+          forge install foundry-rs/forge-std --no-git
+
 
       - name: Run Forge build
         run: |
